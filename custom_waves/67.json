@@ -1,0 +1,48 @@
+{
+  "name": "67",
+  "author": "Editor",
+  "startSun": 150,
+  "nightMode": true,
+  "plants": null,
+  "zombies": null,
+  "waves": [
+    {
+      "zombies": [
+        {
+          "type": "zombie",
+          "row": 1,
+          "delay": 744
+        },
+        {
+          "type": "ssd_zombie",
+          "row": 5,
+          "delay": 842
+        },
+        {
+          "type": "zombie",
+          "row": 4,
+          "delay": 886
+        },
+        {
+          "type": "hdd_zombie",
+          "row": 1,
+          "delay": 3260
+        },
+        {
+          "type": "ssd_zombie",
+          "row": 5,
+          "delay": 3274
+        }
+      ]
+    },
+    {
+      "zombies": [
+        {
+          "type": "your_death",
+          "row": 3,
+          "delay": 0
+        }
+      ]
+    }
+  ]
+}

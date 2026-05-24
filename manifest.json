@@ -1,0 +1,174 @@
+{
+  "name": "Plants VS Zombies Desktop",
+  "version": "2.0.0",
+  "description": "PvZ прямо на вашем рабочем столе",
+  "author": "Xotaym",
+  "grid": {
+    "cols": 9,
+    "rows": 5,
+    "cellWidth": 110,
+    "cellHeight": 110
+  },
+  "waves": 5,
+  "startSun": 150,
+  "sunInterval": [
+    4000,
+    7000
+  ],
+  "plants": {
+    "sunflower": {
+      "cost": 50,
+      "file": "shit.png"
+    },
+    "peashooter": {
+      "cost": 75,
+      "file": "горохострел.png"
+    },
+    "folder_magnet": {
+      "cost": 75,
+      "file": "папка-магнит.png"
+    },
+    "siamese_peashooter": {
+      "cost": 125,
+      "file": "сиамский-горохострел.png"
+    },
+    "xsas_mushroom": {
+      "cost": 150,
+      "file": "xsas-гриб.png"
+    },
+    "sun_mushroom": {
+      "cost": 25,
+      "file": "солнце-гриб.png",
+      "nightOnly": true
+    },
+    "unarchiver": {
+      "cost": 50,
+      "file": "разархиватор.png",
+      "isItem": true
+    },
+    "double_peashooter": {
+      "cost": 125,
+      "file": "дв-горохострел.jpg",
+      "shootInterval": 2000
+    },
+    "snow_peashooter": {
+      "cost": 100,
+      "file": "запретострел.jpg",
+      "shootInterval": 2000
+    },
+    "kaspersky_bean": {
+      "cost": 50,
+      "file": "касп-боб.png",
+      "isItem": true
+    },
+    "daisy": {
+      "cost": 75,
+      "file": "ромашка.jpg",
+      "dropInterval": [
+        8000,
+        12000
+      ]
+    },
+    "cherry": {
+      "cost": 80,
+      "file": "вишня.webp",
+      "isExplosive": true,
+      "explosionRadius": 1,
+      "explosionDelay": 2000,
+      "maxTargets": 5
+    },
+    "avast_nut": {
+      "cost": 100,
+      "file": "авасторех.jpg",
+      "isWall": true,
+      "shieldRadius": 1
+    },
+    "torchwall": {
+      "cost": 175,
+      "file": "пень-файрволл.png",
+      "isFirewall": true
+    },
+    "logic_mine": {
+      "cost": 25,
+      "file": "мина.jpg",
+      "isMine": true
+    },
+    "torrent_lantern": {
+      "cost": 75,
+      "file": "торент-фонарь.jpg",
+      "pairRadius": 1,
+      "maxOnGrid": 2
+    },
+    "basket_chomper": {
+      "cost": 75,
+      "file": "корзинокусалка.jpg",
+      "digestTime": 18000
+    },
+    "catmouse": {
+      "cost": 175,
+      "file": "кошкомышь.png",
+      "aimCooldown": 5000,
+      "projectileDamage": 2
+    },
+    "antivirus_mushroom": {
+      "cost": 100,
+      "file": "антивирус-гриб.png",
+      "hp": 5,
+      "isAntivirus": true,
+      "shieldRadius": 1,
+      "description": "Щит 3x3 от троянов. При поедании гипнотизирует зомби (кроме боссов)."
+    }
+  },
+  "zombies": {
+    "zombie": {
+      "hp": [
+        5,
+        7
+      ],
+      "file": "зомби.webp",
+      "speed": 0.6
+    },
+    "system_zombie": {
+      "hp": [
+        5,
+        7
+      ],
+      "file": "систем-зомби.png",
+      "speed": 0.6,
+      "hasSystemFile": true
+    },
+    "hdd_zombie": {
+      "hp": [
+        10,
+        12
+      ],
+      "file": "хдд-зомби.png",
+      "speed": 0.4,
+      "armorHits": 3
+    },
+    "ssd_zombie": {
+      "hp": [
+        3,
+        5
+      ],
+      "file": "ссд-зомби.png",
+      "speed": 0.8,
+      "armorHits": 2
+    },
+    "winrar_zombie": {
+      "hp": [
+        5,
+        7
+      ],
+      "file": "winrar-зомби.png",
+      "speed": 0.5,
+      "canArchive": true
+    },
+    "your_death": {
+      "hp": 999,
+      "file": "ваша-смерть.png",
+      "speed": 0.3,
+      "isBoss": true
+    }
+  }
+}

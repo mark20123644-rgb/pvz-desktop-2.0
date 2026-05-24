@@ -1,0 +1,28 @@
+{
+  "name": "для видео",
+  "author": "Editor",
+  "startSun": 150,
+  "nightMode": false,
+  "waves": [
+    {
+      "zombies": [
+        {
+          "type": "zombie",
+          "row": 2,
+          "delay": 2317
+        }
+      ]
+    },
+    {
+      "zombies": [
+        {
+          "type": "your_death",
+          "row": 3,
+          "delay": 0
+        }
+      ]
+    }
+  ],
+  "plants": null,
+  "zombies": null
+}

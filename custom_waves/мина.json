@@ -1,0 +1,197 @@
+{
+  "name": "мина",
+  "author": "Editor",
+  "startSun": 999999999,
+  "nightMode": false,
+  "waves": [
+    {
+      "zombies": [
+        {
+          "type": "zombie",
+          "row": 4,
+          "delay": 0
+        },
+        {
+          "type": "zombie",
+          "row": 4,
+          "delay": 0
+        },
+        {
+          "type": "zombie",
+          "row": 3,
+          "delay": 0
+        },
+        {
+          "type": "zombie",
+          "row": 1,
+          "delay": 0
+        },
+        {
+          "type": "zombie",
+          "row": 2,
+          "delay": 0
+        },
+        {
+          "type": "zombie",
+          "row": 3,
+          "delay": 0
+        },
+        {
+          "type": "zombie",
+          "row": 2,
+          "delay": 0
+        }
+      ]
+    },
+    {
+      "zombies": [
+        {
+          "type": "zombie",
+          "row": 2,
+          "delay": 0
+        },
+        {
+          "type": "zombie",
+          "row": 2,
+          "delay": 0
+        },
+        {
+          "type": "zombie",
+          "row": 2,
+          "delay": 0
+        },
+        {
+          "type": "zombie",
+          "row": 2,
+          "delay": 0
+        },
+        {
+          "type": "zombie",
+          "row": 1,
+          "delay": 0
+        },
+        {
+          "type": "zombie",
+          "row": 1,
+          "delay": 0
+        },
+        {
+          "type": "zombie",
+          "row": 3,
+          "delay": 0
+        },
+        {
+          "type": "zombie",
+          "row": 5,
+          "delay": 0
+        },
+        {
+          "type": "zombie",
+          "row": 1,
+          "delay": 0
+        }
+      ]
+    },
+    {
+      "zombies": [
+        {
+          "type": "zombie",
+          "row": 1,
+          "delay": 0
+        },
+        {
+          "type": "zombie",
+          "row": 5,
+          "delay": 0
+        },
+        {
+          "type": "zombie",
+          "row": 4,
+          "delay": 0
+        },
+        {
+          "type": "zombie",
+          "row": 5,
+          "delay": 0
+        },
+        {
+          "type": "zombie",
+          "row": 4,
+          "delay": 0
+        },
+        {
+          "type": "zombie",
+          "row": 2,
+          "delay": 0
+        },
+        {
+          "type": "zombie",
+          "row": 2,
+          "delay": 0
+        },
+        {
+          "type": "zombie",
+          "row": 5,
+          "delay": 0
+        },
+        {
+          "type": "zombie",
+          "row": 4,
+          "delay": 0
+        }
+      ]
+    },
+    {
+      "zombies": [
+        {
+          "type": "zombie",
+          "row": 2,
+          "delay": 0
+        },
+        {
+          "type": "zombie",
+          "row": 4,
+          "delay": 0
+        },
+        {
+          "type": "zombie",
+          "row": 2,
+          "delay": 0
+        },
+        {
+          "type": "zombie",
+          "row": 2,
+          "delay": 0
+        },
+        {
+          "type": "zombie",
+          "row": 2,
+          "delay": 0
+        },
+        {
+          "type": "zombie",
+          "row": 4,
+          "delay": 0
+        },
+        {
+          "type": "zombie",
+          "row": 1,
+          "delay": 0
+        }
+      ]
+    },
+    {
+      "zombies": [
+        {
+          "type": "your_death",
+          "row": 3,
+          "delay": 0
+        }
+      ]
+    }
+  ],
+  "plants": [
+    "logic_mine"
+  ],
+  "zombies": null
+}

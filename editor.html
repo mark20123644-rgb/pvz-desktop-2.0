@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>PvZ Редактор уровней</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+        body { background: #0a0a1a; font-family: monospace; padding: 20px; color: white; }
+        .container { max-width: 700px; margin: 0 auto; }
+        .card { background: #1a2a1a; border: 1px solid #2a4a2a; border-radius: 12px; padding: 15px; margin-bottom: 15px; }
+        .card h3 { color: #ffd700; margin-bottom: 10px; font-size: 16px; }
+        input, select, button { background: #0d1a0d; border: 1px solid #5cb85c; color: #ffd700; padding: 8px; border-radius: 6px; font-size: 14px; }
+        button { cursor: pointer; background: #2d6a2d; color: white; }
+        button:hover { opacity: 0.8; }
+        .btn-danger { background: #c0392b; }
+        .btn-warning { background: #e67e22; }
+        .btn-primary { background: #3498db; }
+        .btn-purple { background: #9b59b6; }
+        .flex { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+        .wave-list { background: #0d1a0d; border-radius: 8px; min-height: 60px; max-height: 150px; overflow: auto; margin: 8px 0; }
+        .wave-item { padding: 6px; border-bottom: 1px solid #2a4a2a; display: flex; justify-content: space-between; cursor: pointer; }
+        .wave-item.selected { background: #3a5a3a; }
+        .zombie-item { padding: 5px; border-bottom: 1px solid #2a4a2a; display: flex; justify-content: space-between; font-size: 13px; }
+        .delete-btn { color: #e74c3c; cursor: pointer; }
+        h1 { background: #e94560; padding: 12px; border-radius: 10px; text-align: center; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🌱 PvZ РЕДАКТОР УРОВНЕЙ 🧟</h1>
+    
+    <div class="card">
+        <h3>📝 ПАРАМЕТРЫ</h3>
+        <div class="flex">
+            <input type="text" id="levelName" placeholder="Название уровня" style="flex:2">
+            <input type="number" id="startSun" value="150" style="width:100px">
+            <label style="display:flex;align-items:center;gap:5px"><input type="checkbox" id="nightMode"> 🌙 НОЧЬ</label>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h3>➕ ДОБАВИТЬ ЗОМБИ</h3>
+        <div class="flex">
+            <select id="zombieType" style="flex:2"></select>
+            <input type="number" id="zombieRow" placeholder="ряд" value="3" style="width:60px">
+            <input type="number" id="zombieDelay" placeholder="мс" value="0" style="width:80px">
+            <button id="addZombieBtn">➕ ДОБАВИТЬ</button>
+        </div>
+        <div class="flex">
+            <label><input type="checkbox" id="randomDelay"> 🎲 РАНДОМ ЗАДЕРЖКА</label>
+            <label><input type="checkbox" id="randomRow"> 🎲 РАНДОМ РЯД</label>
+            <button id="randomWaveBtn" class="btn-purple">🎲 5 РАНДОМНЫХ</button>
+            <button id="addBossBtn" class="btn-danger">👑 БОСС</button>
+            <button id="clearWaveBtn" class="btn-warning">🗑 ОЧИСТИТЬ ВОЛНУ</button>
+        </div>
+        
+        <div style="margin-top:10px">
+            <div>📋 ТЕКУЩАЯ ВОЛНА (<span id="currentCount">0</span>)</div>
+            <div id="currentWave" class="wave-list"></div>
+            <button id="saveWaveBtn" class="btn-primary" style="width:100%">💾 СОХРАНИТЬ ВОЛНУ</button>
+        </div>
+        
+        <div style="margin-top:15px">
+            <div>📋 ВОЛНЫ УРОВНЯ (<span id="wavesCount">0</span>)</div>
+            <div id="wavesList" class="wave-list"></div>
+            <div class="flex">
+                <button id="waveUpBtn" class="btn-warning" style="flex:1">⬆ ВВЕРХ</button>
+                <button id="waveDownBtn" class="btn-warning" style="flex:1">⬇ ВНИЗ</button>
+                <button id="waveEditBtn" style="flex:1">✏ РЕДАКТ</button>
+                <button id="waveDeleteBtn" class="btn-danger" style="flex:1">🗑 УДАЛИТЬ</button>
+            </div>
+        </div>
+    </div>
+    
+    <button id="saveLevelBtn" style="width:100%;background:#e94560;padding:15px;font-size:18px;font-weight:bold;margin-bottom:10px">💾 СОХРАНИТЬ УРОВЕНЬ</button>
+    <button id="closeEditorBtn" class="btn-danger" style="width:100%">✖ ЗАКРЫТЬ РЕДАКТОР</button>
+</div>
+
+<script>
+    let waves = [];
+    let currentWave = [];
+    let selectedWave = null;
+    let allZombies = [];
+    
+    async function loadZombies() {
+        try {
+            const res = await fetch('/api/manifest');
+            const data = await res.json();
+            allZombies = Object.keys(data.zombies || {}).filter(z => z !== 'your_death');
+        } catch(e) {
+            allZombies = ['zombie','system_zombie','hdd_zombie','ssd_zombie','winrar_zombie','trojan_catapult'];
+        }
+        const select = document.getElementById('zombieType');
+        allZombies.forEach(z => {
+            let name = z === 'zombie' ? '🧟 Зомби' : z === 'system_zombie' ? '📁 Систем' : z === 'hdd_zombie' ? '💾 HDD' : z === 'ssd_zombie' ? '⚡ SSD' : z === 'winrar_zombie' ? '🗜 WinRAR' : z === 'trojan_catapult' ? '🎯 Троян' : z;
+            select.innerHTML += `<option value="${z}">${name}</option>`;
+        });
+    }
+    
+    function updateCurrentUI() {
+        const container = document.getElementById('currentWave');
+        const count = document.getElementById('currentCount');
+        container.innerHTML = '';
+        currentWave.forEach((z, i) => {
+            const div = document.createElement('div');
+            div.className = 'zombie-item';
+            div.innerHTML = `${z.type}, ряд ${z.row}, ${z.delay}мс <span class="delete-btn" data-idx="${i}">🗑</span>`;
+            div.querySelector('.delete-btn').onclick = () => { currentWave.splice(i,1); updateCurrentUI(); };
+            container.appendChild(div);
+        });
+        count.textContent = currentWave.length;
+    }
+    
+    function updateWavesUI() {
+        const container = document.getElementById('wavesList');
+        const count = document.getElementById('wavesCount');
+        container.innerHTML = '';
+        waves.forEach((w, i) => {
+            const div = document.createElement('div');
+            div.className = `wave-item ${selectedWave === i ? 'selected' : ''}`;
+            div.textContent = `Волна ${i+1}: ${w.zombies.length} зомби`;
+            div.onclick = () => { selectedWave = i; updateWavesUI(); };
+            container.appendChild(div);
+        });
+        count.textContent = waves.length;
+    }
+    
+    document.getElementById('addZombieBtn').onclick = () => {
+        let type = document.getElementById('zombieType').value;
+        let row = parseInt(document.getElementById('zombieRow').value) || 3;
+        let delay = parseInt(document.getElementById('zombieDelay').value) || 0;
+        if (document.getElementById('randomRow').checked) row = Math.floor(Math.random() * 5) + 1;
+        if (document.getElementById('randomDelay').checked) delay = Math.floor(Math.random() * 5000);
+        currentWave.push({ type, row, delay });
+        updateCurrentUI();
+    };
+    
+    document.getElementById('randomWaveBtn').onclick = () => {
+        currentWave = [];
+        for (let i = 0; i < 5; i++) {
+            currentWave.push({
+                type: allZombies[Math.floor(Math.random() * allZombies.length)],
+                row: Math.floor(Math.random() * 5) + 1,
+                delay: Math.floor(Math.random() * 5000)
+            });
+        }
+        currentWave.sort((a,b) => a.delay - b.delay);
+        updateCurrentUI();
+    };
+    
+    document.getElementById('addBossBtn').onclick = () => {
+        currentWave.push({ type: 'your_death', row: 3, delay: 0 });
+        updateCurrentUI();
+    };
+    
+    document.getElementById('clearWaveBtn').onclick = () => {
+        currentWave = [];
+        updateCurrentUI();
+    };
+    
+    document.getElementById('saveWaveBtn').onclick = () => {
+        if (!currentWave.length) { alert('Нет зомби!'); return; }
+        waves.push({ zombies: [...currentWave] });
+        currentWave = [];
+        updateCurrentUI();
+        updateWavesUI();
+    };
+    
+    document.getElementById('waveUpBtn').onclick = () => {
+        if (selectedWave !== null && selectedWave > 0) {
+            [waves[selectedWave], waves[selectedWave-1]] = [waves[selectedWave-1], waves[selectedWave]];
+            selectedWave--;
+            updateWavesUI();
+        }
+    };
+    
+    document.getElementById('waveDownBtn').onclick = () => {
+        if (selectedWave !== null && selectedWave < waves.length - 1) {
+            [waves[selectedWave], waves[selectedWave+1]] = [waves[selectedWave+1], waves[selectedWave]];
+            selectedWave++;
+            updateWavesUI();
+        }
+    };
+    
+    document.getElementById('waveEditBtn').onclick = () => {
+        if (selectedWave !== null && waves[selectedWave]) {
+            currentWave = [...waves[selectedWave].zombies];
+            waves.splice(selectedWave, 1);
+            selectedWave = null;
+            updateCurrentUI();
+            updateWavesUI();
+        }
+    };
+    
+    document.getElementById('waveDeleteBtn').onclick = () => {
+        if (selectedWave !== null && waves[selectedWave]) {
+            waves.splice(selectedWave, 1);
+            selectedWave = null;
+            updateWavesUI();
+        }
+    };
+    
+    document.getElementById('saveLevelBtn').onclick = () => {
+        const name = document.getElementById('levelName').value.trim();
+        if (!name) { alert('Введите название!'); return; }
+        if (!waves.length) { alert('Добавьте волны!'); return; }
+        
+        const level = {
+            name: name,
+            author: "Editor",
+            startSun: parseInt(document.getElementById('startSun').value) || 150,
+            nightMode: document.getElementById('nightMode').checked,
+            plants: null,
+            zombies: null,
+            waves: waves
+        };
+        
+        const filename = name.toLowerCase().replace(/ /g, '_') + '.json';
+        const blob = new Blob([JSON.stringify(level, null, 2)], {type: 'application/json'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        a.click();
+        
+        alert(`✅ Уровень "${name}" сохранён!\nФайл: custom_waves/${filename}\n\nПерезапусти игру чтобы увидеть уровень!`);
+        
+        waves = [];
+        currentWave = [];
+        selectedWave = null;
+        updateCurrentUI();
+        updateWavesUI();
+        document.getElementById('levelName').value = '';
+    };
+    
+    document.getElementById('closeEditorBtn').onclick = () => {
+        window.location.href = '/';
+    };
+    
+    loadZombies();
+</script>
+</body>
+</html>

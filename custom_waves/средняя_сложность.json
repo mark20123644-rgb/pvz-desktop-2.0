@@ -1,0 +1,264 @@
+{
+  "name": "средняя сложность",
+  "author": "Editor",
+  "startSun": 150,
+  "nightMode": false,
+  "waves": [
+    {
+      "zombies": [
+        {
+          "type": "zombie",
+          "row": 4,
+          "delay": 2205
+        },
+        {
+          "type": "zombie",
+          "row": 3,
+          "delay": 875
+        },
+        {
+          "type": "zombie",
+          "row": 4,
+          "delay": 2078
+        },
+        {
+          "type": "zombie",
+          "row": 1,
+          "delay": 106
+        },
+        {
+          "type": "zombie",
+          "row": 1,
+          "delay": 1717
+        }
+      ]
+    },
+    {
+      "zombies": [
+        {
+          "type": "hdd_zombie",
+          "row": 5,
+          "delay": 626
+        },
+        {
+          "type": "zombie",
+          "row": 2,
+          "delay": 2665
+        },
+        {
+          "type": "system_zombie",
+          "row": 1,
+          "delay": 3569
+        },
+        {
+          "type": "zombie",
+          "row": 5,
+          "delay": 2743
+        },
+        {
+          "type": "ssd_zombie",
+          "row": 5,
+          "delay": 2533
+        },
+        {
+          "type": "your_death",
+          "row": 2,
+          "delay": 2284
+        },
+        {
+          "type": "your_death",
+          "row": 5,
+          "delay": 2562
+        },
+        {
+          "type": "winrar_zombie",
+          "row": 4,
+          "delay": 164
+        },
+        {
+          "type": "your_death",
+          "row": 5,
+          "delay": 2291
+        },
+        {
+          "type": "winrar_zombie",
+          "row": 2,
+          "delay": 1664
+        }
+      ]
+    },
+    {
+      "zombies": [
+        {
+          "type": "winrar_zombie",
+          "row": 4,
+          "delay": 3202
+        },
+        {
+          "type": "zombie",
+          "row": 1,
+          "delay": 752
+        },
+        {
+          "type": "hdd_zombie",
+          "row": 4,
+          "delay": 1923
+        },
+        {
+          "type": "hdd_zombie",
+          "row": 3,
+          "delay": 4755
+        },
+        {
+          "type": "zombie",
+          "row": 3,
+          "delay": 2366
+        },
+        {
+          "type": "system_zombie",
+          "row": 5,
+          "delay": 4639
+        },
+        {
+          "type": "your_death",
+          "row": 3,
+          "delay": 2490
+        },
+        {
+          "type": "ssd_zombie",
+          "row": 2,
+          "delay": 4860
+        },
+        {
+          "type": "your_death",
+          "row": 2,
+          "delay": 2636
+        },
+        {
+          "type": "your_death",
+          "row": 2,
+          "delay": 1689
+        }
+      ]
+    },
+    {
+      "zombies": [
+        {
+          "type": "winrar_zombie",
+          "row": 5,
+          "delay": 2585
+        },
+        {
+          "type": "zombie",
+          "row": 1,
+          "delay": 2103
+        },
+        {
+          "type": "ssd_zombie",
+          "row": 2,
+          "delay": 4271
+        },
+        {
+          "type": "zombie",
+          "row": 4,
+          "delay": 1819
+        },
+        {
+          "type": "your_death",
+          "row": 3,
+          "delay": 2409
+        },
+        {
+          "type": "your_death",
+          "row": 5,
+          "delay": 3067
+        },
+        {
+          "type": "zombie",
+          "row": 2,
+          "delay": 3346
+        },
+        {
+          "type": "system_zombie",
+          "row": 4,
+          "delay": 522
+        },
+        {
+          "type": "zombie",
+          "row": 5,
+          "delay": 3212
+        },
+        {
+          "type": "hdd_zombie",
+          "row": 5,
+          "delay": 988
+        }
+      ]
+    },
+    {
+      "zombies": [
+        {
+          "type": "hdd_zombie",
+          "row": 4,
+          "delay": 81
+        },
+        {
+          "type": "system_zombie",
+          "row": 2,
+          "delay": 2759
+        },
+        {
+          "type": "winrar_zombie",
+          "row": 4,
+          "delay": 2986
+        },
+        {
+          "type": "hdd_zombie",
+          "row": 1,
+          "delay": 4135
+        },
+        {
+          "type": "ssd_zombie",
+          "row": 1,
+          "delay": 2234
+        },
+        {
+          "type": "system_zombie",
+          "row": 1,
+          "delay": 4262
+        },
+        {
+          "type": "hdd_zombie",
+          "row": 3,
+          "delay": 74
+        },
+        {
+          "type": "hdd_zombie",
+          "row": 1,
+          "delay": 3626
+        },
+        {
+          "type": "hdd_zombie",
+          "row": 5,
+          "delay": 2454
+        },
+        {
+          "type": "zombie",
+          "row": 3,
+          "delay": 2743
+        }
+      ]
+    },
+    {
+      "zombies": [
+        {
+          "type": "your_death",
+          "row": 1,
+          "delay": 3686
+        }
+      ]
+    }
+  ],
+  "plants": null,
+  "zombies": null
+}

@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Plants VS Zombies Desktop</title>
+<link rel="stylesheet" href="static/css/main.css">
+<script>
+if (location.protocol === 'file:') {
+  document.addEventListener('DOMContentLoaded', function() {
+    document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#0a0a1a;color:#e74c3c;font-family:Consolas,monospace;text-align:center;padding:40px"><div><h1 style="font-size:48px;margin:0 0 20px">&#x26D4;</h1><h2 style="margin:0 0 12px">Доступ запрещён</h2><p style="color:#888;font-size:14px">Запустите игру через <b>server.py</b></p><p style="color:#555;font-size:12px;margin-top:8px">python server.py</p></div></div>';
+  });
+}
+</script>
+<style>.editor-inline{background:#0d1a0d;border-radius:10px;padding:15px;margin-top:15px;border:1px solid #5cb85c;display:none}.editor-inline select,.editor-inline input{background:#1a2a1a;color:#ffd700;border:1px solid #5cb85c;border-radius:5px;padding:6px}.ed-wave-item{padding:4px;border-bottom:1px solid #2a4a2a;cursor:pointer}.ed-wave-item.selected{background:#3a5a3a}</style>
+</head>
+<body>
+
+<div id="screen-welcome" class="screen">
+  <div class="welcome-bg"></div>
+  <div class="welcome-cursik">
+    <img src="static/img/ui/cursik.png" alt="">
+  </div>
+  <div class="welcome-mini-cursik welcome-mc-1">
+    <img src="static/img/ui/cursik.png" alt="">
+  </div>
+  <div class="welcome-mini-cursik welcome-mc-2">
+    <img src="static/img/ui/cursik.png" alt="">
+  </div>
+  <div class="welcome-mini-cursik welcome-mc-3">
+    <img src="static/img/ui/cursik.png" alt="">
+  </div>
+  <div class="welcome-content">
+    <div class="welcome-title">
+      <span class="wt-plants">Plants</span>
+      <span class="wt-vs">VS</span>
+      <span class="wt-zombies">Zombies</span>
+      <span class="wt-desktop">Desktop 2.0</span>
+    </div>
+    <p class="welcome-subtitle" data-i18n="welcome.subtitle">Твой рабочий стол — поле битвы.</p>
+    <button class="welcome-btn" id="btn-welcome-start" data-i18n="welcome.start">Начать</button>
+  </div>
+</div>
+
+<div id="screen-boot" class="screen active">
+  <div class="boot-defender" style="display:none">
+    <div class="defender-header">
+      <div class="defender-header-left">
+        <div class="defender-shield">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <span class="defender-header-title" data-i18n="defender.title">Безопасность Windows</span>
+      </div>
+      <div class="defender-header-controls">
+        <span class="defender-ctrl">—</span>
+        <span class="defender-ctrl">☐</span>
+        <span class="defender-ctrl close">✕</span>
+      </div>
+    </div>
+    <div class="defender-body">
+      <div class="defender-alert-icon">
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="#e74c3c">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+        </svg>
+      </div>
+      <div class="defender-alert-text">
+        <div class="defender-alert-title" id="defender-title" data-i18n="defender.alert_title">Обнаружены угрозы</div>
+        <div class="defender-alert-desc" id="defender-desc" data-i18n="defender.alert_desc">Защита от вирусов и угроз обнаружила вредоносные файлы на вашем устройстве.</div>
+      </div>
+      <div class="defender-threat-card">
+        <div class="defender-threat-severity" data-i18n="defender.severity">Критический</div>
+        <div class="defender-threat-name">Trojan:Win32/PvZDesktop.A!ml</div>
+        <div class="defender-threat-detail">
+          <div class="defender-detail-row"><span data-i18n="defender.file_label">Файл:</span> <span id="threat-filename">pvz_desktop.exe</span></div>
+          <div class="defender-detail-row"><span data-i18n="defender.status_label">Статус:</span> <span id="defender-status" class="defender-status-active" data-i18n="defender.status">Активна</span></div>
+          <div class="defender-detail-row"><span data-i18n="defender.action_label">Действие:</span> <span id="defender-action" data-i18n="defender.action">Удаление файлов...</span></div>
+        </div>
+      </div>
+      <div class="defender-progress-section">
+        <div class="defender-progress-label" id="defender-progress-label" data-i18n="defender.progress">Удаление вредоносных файлов...</div>
+        <div class="defender-bar"><div class="defender-bar-fill"></div></div>
+      </div>
+      <div class="defender-confirm" id="defender-confirm" style="display:none">
+        <div class="defender-confirm-question" data-i18n="defender.confirm_question">Попытаться устранить заражение?</div>
+        <div class="defender-confirm-buttons">
+          <button class="defender-btn defender-btn-yes" id="defender-btn-yes" data-i18n="defender.btn_yes">Да, удалить</button>
+          <button class="defender-btn defender-btn-no" id="defender-btn-no" data-i18n="defender.btn_no">Нет, оставить</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="boot-icons" class="boot-desktop-icons"></div>
+</div>
+
+<div id="screen-menu" class="screen">
+  <div class="menu-bg"></div>
+  <div class="menu-particles">
+    <div class="menu-particle"></div>
+    <div class="menu-particle"></div>
+    <div class="menu-particle"></div>
+    <div class="menu-particle"></div>
+    <div class="menu-particle"></div>
+    <div class="menu-particle"></div>
+    <div class="menu-particle"></div>
+    <div class="menu-particle"></div>
+  </div>
+  <div class="menu-left">
+    <div class="menu-title">
+      <span class="menu-title-line1">Plants Vs. Zombies</span>
+      <span class="menu-title-line2">Desktop 2.0</span>
+    </div>
+    <div class="menu-buttons">
+      <button class="m-btn m-btn-wide" id="btn-play" data-i18n="menu.play">▶ Играть</button>
+      <button class="m-btn m-btn-wide" id="btn-docs" data-i18n="menu.docs">🖥 Документация</button>
+      <div class="m-btn-row">
+        <button class="m-btn m-btn-square" id="btn-settings" data-i18n-title="menu.settings" title="Настройки" data-icon="⚙"></button>
+        <button class="m-btn m-btn-square" id="btn-update" data-i18n-title="menu.update" title="Обновления" data-icon="↻"></button>
+        
+        <button class="m-btn m-btn-rect" id="btn-credits" data-i18n="menu.credits">✦ Авторы</button>
+        <button class="m-btn m-btn-square m-btn-exit" id="btn-exit" data-i18n-title="menu.exit" title="Выход" data-icon="✖"></button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="menu-update-badge hidden" id="menu-update-badge" data-i18n="update.badge">● Доступно обновление</div>
+  <div class="menu-cursik-angry" id="menu-cursik-angry" aria-hidden="true">
+    <img src="static/img/ui/cursik.png" alt="">
+  </div>
+</div>
+
+<div id="screen-docs" class="screen">
+  <div class="docs-overlay"></div>
+  <div class="docs-window">
+    <div class="docs-titlebar">
+      <span data-i18n="docs.title">📄 Документация — Plants VS Zombies Desktop</span>
+      <button class="docs-close" id="btn-docs-close">✕</button>
+    </div>
+    <div class="docs-body">
+      <h2 data-i18n="docs.plants_heading">🌱 Растения</h2>
+      <div class="docs-grid">
+        <div class="docs-card">
+          <img src="static/img/plants/sunflower.png" alt="Подсолнух" onerror="this.src=''">
+          <h3 data-i18n="docs.plant.sunflower.name">Подсолнух</h3>
+          <span class="docs-class" style="color:#ffd700" data-i18n="docs.plant.sunflower.class">Солнечное</span>
+          <p data-i18n-html="docs.plant.sunflower.stats">Стоимость: <b>50 ☀</b></p>
+          <p data-i18n="docs.plant.sunflower.desc">Производит солнца каждые 6–9 секунд. Основа экономики. Не работает ночью.</p>
+        </div>
+        <div class="docs-card">
+          <img src="static/img/plants/peashooter.png" alt="Горохострел" onerror="this.src=''">
+          <h3 data-i18n="docs.plant.peashooter.name">Горохострел</h3>
+          <span class="docs-class" style="color:#7fff00" data-i18n="docs.plant.peashooter.class">Атакующее</span>
+          <p data-i18n-html="docs.plant.peashooter.stats">Стоимость: <b>75 ☀</b></p>
+          <p data-i18n="docs.plant.peashooter.desc">Стреляет горошинами по зомби. 1 горошина = 1 урон.</p>
+        </div>
+        <div class="docs-card">
+          <img src="static/img/plants/folder-magnet.png" alt="Папка-магнит" onerror="this.src=''">
+          <h3 data-i18n="docs.plant.folder_magnet.name">Папка-магнит</h3>
+          <span class="docs-class" style="color:#4488ff" data-i18n="docs.plant.folder_magnet.class">Системное</span>
+          <p data-i18n-html="docs.plant.folder_magnet.stats">Стоимость: <b>75 ☀</b></p>
+          <p data-i18n="docs.plant.folder_magnet.desc">Притягивает системные файлы с систем-зомби в радиусе 3 клеток. Спасает от BSOD!</p>
+        </div>
+        <div class="docs-card">
+          <img src="static/img/plants/siamese-peashooter.png" alt="Сиамский горохострел" onerror="this.src=''">
+          <h3 data-i18n="docs.plant.siamese.name">Сиамский горохострел</h3>
+          <span class="docs-class" style="color:#7fff00" data-i18n="docs.plant.siamese.class">Атакующее</span>
+          <p data-i18n-html="docs.plant.siamese.stats">Стоимость: <b>125 ☀</b></p>
+          <p data-i18n="docs.plant.siamese.desc">Стреляет горошинами в обе стороны — и вправо, и влево!</p>
+        </div>
+        <div class="docs-card">
+          <img src="static/img/plants/double-peashooter.jpg" alt="Двойной горохострел" onerror="this.src=''">
+          <h3 data-i18n="docs.plant.double_peashooter.name">Двойной горохострел</h3>
+          <span class="docs-class" style="color:#7fff00" data-i18n="docs.plant.double_peashooter.class">Атакующее</span>
+          <p data-i18n-html="docs.plant.double_peashooter.stats">Стоимость: <b>125 ☀</b></p>
+          <p data-i18n="docs.plant.double_peashooter.desc">Стреляет двумя горошинами за раз. Удвоенная огневая мощь!</p>
+        </div>
+        <div class="docs-card">
+          <img src="static/img/plants/snow-peashooter.jpg" alt="Запретострел" onerror="this.src=''">
+          <h3 data-i18n="docs.plant.snow_peashooter.name">Запретострел</h3>
+          <span class="docs-class" style="color:#00bfff" data-i18n="docs.plant.snow_peashooter.class">Атакующее / Замедление</span>
+          <p data-i18n-html="docs.plant.snow_peashooter.stats">Стоимость: <b>100 ☀</b></p>
+          <p data-i18n="docs.plant.snow_peashooter.desc">Стреляет ледяными горошинами, замедляя зомби. Синий лед - запретная технология!</p>
+        </div>
+        <div class="docs-card">
+          <img src="static/img/plants/xsas-mushroom.png" alt="XSAS гриб" onerror="this.src=''">
+          <h3 data-i18n="docs.plant.xsas.name">XSAS-гриб</h3>
+          <span class="docs-class" style="color:#ff00ff" data-i18n="docs.plant.xsas.class">Взрывное</span>
+          <p data-i18n-html="docs.plant.xsas.stats">Стоимость: <b>150 ☀</b></p>
+          <p data-i18n="docs.plant.xsas.desc">Взрывается через 3 сек. Уничтожает всё в радиусе 5x5. Оставляет пиксельные артефакты.</p>
+        </div>
+        <div class="docs-card">
+          <img src="static/img/plants/sun-mushroom.png" alt="Солнце-гриб" onerror="this.src=''">
+          <h3 data-i18n="docs.plant.sun_mushroom.name">Солнце-гриб</h3>
+          <span class="docs-class" style="color:#9966ff" data-i18n="docs.plant.sun_mushroom.class">Ночное</span>
+          <p data-i18n-html="docs.plant.sun_mushroom.stats">Стоимость: <b>25 ☀</b></p>
+          <p data-i18n="docs.plant.sun_mushroom.desc">Дешёвый заменитель подсолнуха. Работает только ночью. Производит 15 ☀.</p>
+        </div>
+        <div class="docs-card">
+          <img src="static/img/plants/unarchiver.png" alt="Разархиватор" onerror="this.src=''">
+          <h3 data-i18n="docs.plant.unarchiver.name">Разархиватор</h3>
+          <span class="docs-class" style="color:#f39c12" data-i18n="docs.plant.unarchiver.class">Предмет</span>
+          <p data-i18n-html="docs.plant.unarchiver.stats">Стоимость: <b>50 ☀</b></p>
+          <p data-i18n="docs.plant.unarchiver.desc">Снимает архивацию с растений, заражённых WinRAR-зомби. Не сажается — применяется на растение.</p>
+        </div>
+        <div class="docs-card">
+          <img src="static/img/plants/kaspersky-bean.png" alt="Касперский-боб" onerror="this.src=''">
+          <h3 data-i18n="docs.plant.kaspersky.name">Касперский-боб</h3>
+          <span class="docs-class" style="color:#00cc44" data-i18n="docs.plant.kaspersky.class">Антивирус</span>
+          <p data-i18n-html="docs.plant.kaspersky.stats">Стоимость: <b>50 ☀</b></p>
+          <p data-i18n="docs.plant.kaspersky.desc">Лечит растения, заражённые троянами. Применяется на заражённое растение — оно полностью восстанавливается.</p>
+        </div>
+        <div class="docs-card">
+          <img src="static/img/plants/daisy.jpg" alt="Ромашка" onerror="this.src=''">
+          <h3 data-i18n="docs.plant.daisy.name">Ромашка</h3>
+          <span class="docs-class" style="color:#ff69b4" data-i18n="docs.plant.daisy.class">Генератор</span>
+          <p data-i18n-html="docs.plant.daisy.stats">Стоимость: <b>75 ☀</b></p>
+          <p data-i18n="docs.plant.daisy.desc">Раз в 8–12 сек. выдаёт случайный предмет: растение, солнце, системный файл или даже зомби!</p>
+        </div>
+        <div class="docs-card">
+          <img src="static/img/plants/cherry.webp" alt="Вишня" onerror="this.src=''">
+          <h3 data-i18n="docs.plant.cherry.name">Вишня</h3>
+          <span class="docs-class" style="color:#ff3300" data-i18n="docs.plant.cherry.class">Взрывное</span>
+          <p data-i18n-html="docs.plant.cherry.stats">Стоимость: <b>80 ☀</b></p>
+          <p data-i18n="docs.plant.cherry.desc">Через 2 сек. взрывается в области 3x3, убивая до 5 самых сильных зомби. Системный файл при этом не уничтожается!</p>
+        </div>
+        <div class="docs-card">
+          <img src="static/img/plants/avast-nut.jpg" alt="Авасторех" onerror="this.src=''">
+          <h3 data-i18n="docs.plant.avast_nut.name">Авасторех</h3>
+          <span class="docs-class" style="color:#2ecc71" data-i18n="docs.plant.avast_nut.class">Защита</span>
+          <p data-i18n-html="docs.plant.avast_nut.stats">Стоимость: <b>100 ☀</b> | ХП: <b>10</b></p>
+          <p data-i18n="docs.plant.avast_nut.desc">Крепкий орех-стена. Нейтрализует трояны в радиусе 3×3 клетки. Блокирует заражение растений вирусами.</p>
+        </div>
+        <div class="docs-card">
+          <img src="static/img/plants/torchwall.png" alt="Пень-файрволл" onerror="this.src=''">
+          <h3 data-i18n="docs.plant.torchwall.name">Пень-файрволл</h3>
+          <span class="docs-class" style="color:#ff6600" data-i18n="docs.plant.torchwall.class">Антивирус / Поджигатель</span>
+          <p data-i18n-html="docs.plant.torchwall.stats">Стоимость: <b>175 ☀</b> | ХП: <b>3</b></p>
+          <p data-i18n-html="docs.plant.torchwall.desc">Защищает растение прямо за собой от вирусов. Сбивает любой троян, чья траектория проходит над ним. Поджигает свои горошины - те наносят <b>×3 урон</b>. Замедляющие горошины при поджигании становятся коричневыми, сохраняют замедление.</p>
+        </div>
+        <div class="docs-card">
+          <img src="static/img/plants/mine.jpg" alt="Логическая мина" onerror="this.src=''">
+          <h3 data-i18n="docs.plant.logic_mine.name">Логическая мина</h3>
+          <span class="docs-class" style="color:#ff3300" data-i18n="docs.plant.logic_mine.class">Взрывное</span>
+          <p data-i18n-html="docs.plant.logic_mine.stats">Стоимость: <b>25 ☀</b></p>
+          <p data-i18n="docs.plant.logic_mine.desc">Взрывается при контакте с зомби, уничтожая всех на своей клетке. Дешевая, одноразовая, но эффективная.</p>
+        </div>
+        <div class="docs-card">
+          <img src="static/img/plants/torrent-lantern.jpg" alt="Торент-фонарь" onerror="this.src=''">
+          <h3 data-i18n="docs.plant.torrent_lantern.name">Торент-фонарь</h3>
+          <span class="docs-class" style="color:#00ccff" data-i18n="docs.plant.torrent_lantern.class">Парное</span>
+          <p data-i18n-html="docs.plant.torrent_lantern.stats">Стоимость: <b>75 ☀</b> | Макс. на поле: <b>2</b></p>
+          <p data-i18n="docs.plant.torrent_lantern.desc">Работает в паре. Каждое растение в радиусе 3x3 создает бесплатный слот у второго фонаря.</p>
+        </div>
+        <div class="docs-card">
+          <img src="static/img/plants/basket-chomper.jpg" alt="Корзинокусалка" onerror="this.src=''">
+          <h3 data-i18n="docs.plant.basket_chomper.name">Корзинокусалка</h3>
+          <span class="docs-class" style="color:#e67e22" data-i18n="docs.plant.basket_chomper.class">Поглощающее</span>
+          <p data-i18n-html="docs.plant.basket_chomper.stats">Стоимость: <b>75 ☀</b> | Переваривание: <b>18 сек</b></p>
+          <p data-i18n="docs.plant.basket_chomper.desc">Мгновенно съедает зомби, но потом переваривает 18 сек. ПКМ → «Очистить корзину» - ручная очистка. Не ест системный файл у систем-зомби - файл безопасно выпадает.</p>
+        </div>
+        <div class="docs-card">
+          <img src="static/img/plants/catmouse.png" alt="Кошкомышь" onerror="this.src=''">
+          <h3 data-i18n="docs.plant.catmouse.name">Кошкомышь</h3>
+          <span class="docs-class" style="color:#9b59ff" data-i18n="docs.plant.catmouse.class">Атакующее / Ручное наведение</span>
+          <p data-i18n-html="docs.plant.catmouse.stats">Стоимость: <b>175 ☀</b> | ХП: <b>3</b> | Перезарядка выстрела: <b>5 сек</b></p>
+          <p data-i18n-html="docs.plant.catmouse.desc">Зажми <b>ЛКМ</b> в любой точке поля - каждая кошкомышь выпустит курсор-снаряд в эту точку, нанося <b>2 урон</b> зомби при попадании.</p>
+        </div>
+      </div>
+      <h2 data-i18n="docs.zombies_heading">🧟 Зомби</h2>
+      <div class="docs-grid">
+        <div class="docs-card">
+          <img src="static/img/zombies/zombie.webp" alt="Зомби" onerror="this.src=''">
+          <h3 data-i18n="docs.zombie.zombie.name">Зомби</h3>
+          <span class="docs-class" style="color:#8fbc8f" data-i18n="docs.zombie.zombie.class">Базовый</span>
+          <p data-i18n-html="docs.zombie.zombie.stats">ХП: <b>5–7</b></p>
+          <p data-i18n="docs.zombie.zombie.desc">Обычный зомби. Каждый следующий получает имя как копия файла в Windows: «зомби — копия.webp», «зомби — копия(1).webp» и т.д.</p>
+        </div>
+        <div class="docs-card">
+          <img src="static/img/zombies/trojan-catapult.jpg" alt="Троянская катапульта" onerror="this.src=''">
+          <h3 data-i18n="docs.zombie.trojan.name">Троян-катапульта</h3>
+          <span class="docs-class" style="color:#ff4444" data-i18n="docs.zombie.trojan.class">Вирусный</span>
+          <p data-i18n-html="docs.zombie.trojan.stats">ХП: <b>8–10</b></p>
+          <p data-i18n="docs.zombie.trojan.desc">Стреляет троянами по случайным растениям. Заражённые растения перестают работать. При уничтожении заражённого — из него вылезает зомби!</p>
+        </div>
+        <div class="docs-card">
+          <img src="static/img/zombies/system-zombie.jpg" alt="Систем-зомби" onerror="this.src=''">
+          <h3 data-i18n="docs.zombie.system.name">Систем-зомби</h3>
+          <span class="docs-class" style="color:#ff4444" data-i18n="docs.zombie.system.class">Вирусный</span>
+          <p data-i18n-html="docs.zombie.system.stats">ХП: <b>5–7</b> | Файл: <b>4</b> попадания</p>
+          <p data-i18n="docs.zombie.system.desc">Несёт системный файл. Если файл уничтожен горошинами — BSOD! Используйте Папку-магнит.</p>
+        </div>
+        <div class="docs-card">
+          <img src="static/img/zombies/hdd-zombie.jpg" alt="HDD-зомби" onerror="this.src=''">
+          <h3 data-i18n="docs.zombie.hdd.name">HDD-зомби</h3>
+          <span class="docs-class" style="color:#aaa" data-i18n="docs.zombie.hdd.class">Бронированный</span>
+          <p data-i18n-html="docs.zombie.hdd.stats">ХП: <b>10–12</b> | Броня: <b>3</b> попадания</p>
+          <p data-i18n="docs.zombie.hdd.desc">Медленный и толстый. HDD-броня поглощает первые 3 удара, потом становится обычным.</p>
+        </div>
+        <div class="docs-card">
+          <img src="static/img/zombies/ssd-zombie.jpg" alt="SSD-зомби" onerror="this.src=''">
+          <h3 data-i18n="docs.zombie.ssd.name">SSD-зомби</h3>
+          <span class="docs-class" style="color:#aaa" data-i18n="docs.zombie.ssd.class">Бронированный</span>
+          <p data-i18n-html="docs.zombie.ssd.stats">ХП: <b>3–5</b> | Броня: <b>2</b> попадания</p>
+          <p data-i18n="docs.zombie.ssd.desc">Быстрый, но хрупкий. SSD-броня поглощает 2 удара.</p>
+        </div>
+        <div class="docs-card">
+          <img src="static/img/zombies/winrar-zombie.png" alt="WinRAR-зомби" onerror="this.src=''">
+          <h3 data-i18n="docs.zombie.winrar.name">WinRAR-зомби</h3>
+          <span class="docs-class" style="color:#f39c12" data-i18n="docs.zombie.winrar.class">Архиватор</span>
+          <p data-i18n-html="docs.zombie.winrar.stats">ХП: <b>5–7</b></p>
+          <p data-i18n="docs.zombie.winrar.desc">Архивирует растения за 2 сек. Заархивированные растения не работают. Используйте Разархиватор!</p>
+        </div>
+        <div class="docs-card">
+          <img src="static/img/zombies/bungee.jpg" alt="Тарзанка" onerror="this.src=''">
+          <h3 data-i18n="docs.zombie.bungee.name">Тарзанка</h3>
+          <span class="docs-class" style="color:#4488ff" data-i18n="docs.zombie.bungee.class">Воздушный</span>
+          <p data-i18n-html="docs.zombie.bungee.stats">ХП: <b>8</b></p>
+          <p data-i18n="docs.zombie.bungee.desc">Прилетает сверху на растение, хватает его и утаскивает через 2 сек. Горошины не попадают! Контрится вишней и XSAS-грибом.</p>
+        </div>
+        <div class="docs-card">
+          <img src="static/img/zombies/flag-zombie.webp" alt="Зомби с флагом" onerror="this.src=''">
+          <h3 data-i18n="docs.zombie.flag.name">Зомби с флагом</h3>
+          <span class="docs-class" style="color:#3498db" data-i18n="docs.zombie.flag.class">Поддержка</span>
+          <p data-i18n-html="docs.zombie.flag.stats">ХП: <b>6–8</b></p>
+          <p data-i18n="docs.zombie.flag.desc">Юнит поддержки. Делает зомби на соседних рядах (сверху и снизу) бессмертными, пока стоит на той же клетке или на 1 назад. Убей его первым!</p>
+        </div>
+        <div class="docs-card">
+          <img src="static/img/zombies/pole-loud.png" alt="Шест-громкий" onerror="this.src=''">
+          <h3 data-i18n="docs.zombie.pole_loud.name">Шест-громкий</h3>
+          <span class="docs-class" style="color:#ff8800" data-i18n="docs.zombie.pole_loud.class">Аудио-хакер</span>
+          <p data-i18n-html="docs.zombie.pole_loud.stats">ХП: <b>4-6</b></p>
+          <p data-i18n="docs.zombie.pole_loud.desc">Повышает громкость игры при приближении. Чем ближе - тем громче!</p>
+        </div>
+        <div class="docs-card">
+          <img src="static/img/zombies/pole-quiet.png" alt="Шест-тихий" onerror="this.src=''">
+          <h3 data-i18n="docs.zombie.pole_quiet.name">Шест-тихий</h3>
+          <span class="docs-class" style="color:#6644aa" data-i18n="docs.zombie.pole_quiet.class">Аудио-хакер</span>
+          <p data-i18n-html="docs.zombie.pole_quiet.stats">ХП: <b>4-6</b></p>
+          <p data-i18n="docs.zombie.pole_quiet.desc">Понижает громкость игры при приближении. Тишина - лучший друг зомби.</p>
+        </div>
+        <div class="docs-card">
+          <img src="static/img/zombies/excel-zombie.png" alt="Excel-зомби" onerror="this.src=''">
+          <h3 data-i18n="docs.zombie.excel.name">Excel-зомби</h3>
+          <span class="docs-class" style="color:#1a7a3a" data-i18n="docs.zombie.excel.class">Бронированный / Особый</span>
+          <p data-i18n-html="docs.zombie.excel.stats">ХП: <b>20-24</b> | Щит: <b>6</b> попаданий</p>
+          <p data-i18n="docs.zombie.excel.desc">Несет Excel-таблицу как щит. Каждые 3 урона замедляется на 3%. При нулевой скорости разворачивается и уходит обратно! Папка-магнит притягивает таблицу.</p>
+        </div>
+        <div class="docs-card boss-card">
+          <img src="static/img/zombies/your-death.jpg" alt="Ваша смерть" onerror="this.src=''">
+          <h3 data-i18n="docs.zombie.boss.name">Ваша смерть</h3>
+          <span class="docs-class" style="color:#e74c3c" data-i18n="docs.zombie.boss.class">Босс</span>
+          <p data-i18n-html="docs.zombie.boss.stats">ХП: <b>∞</b></p>
+          <p data-i18n="docs.zombie.boss.desc">Финальный босс. Появляется в конце игры. Неуязвим.</p>
+        </div>
+      </div>
+      <h2 data-i18n="docs.controls_heading">🖱️ Управление</h2>
+      <table class="docs-table">
+        <tr><td data-i18n-html="docs.ctrl.drag_html"><b>Перетащить иконку</b></td><td data-i18n="docs.ctrl.drag_desc">Посадить растение на клетку рабочего стола</td></tr>
+        <tr><td data-i18n-html="docs.ctrl.rmb_html"><b>ПКМ на клетке</b></td><td data-i18n="docs.ctrl.rmb_desc">Посадить выбранное / убрать растение</td></tr>
+        <tr><td data-i18n-html="docs.ctrl.esc_html"><b>ESC</b></td><td data-i18n="docs.ctrl.esc_desc">Меню паузы</td></tr>
+        <tr><td data-i18n-html="docs.ctrl.tilde_html"><b>~</b></td><td data-i18n="docs.ctrl.tilde_desc">Панель разработчика (если включена в настройках)</td></tr>
+        <tr><td data-i18n-html="docs.ctrl.scroll_html"><b>Колёсико мыши</b></td><td data-i18n="docs.ctrl.scroll_desc">Прокрутка меню растений</td></tr>
+      </table>
+      <h2 data-i18n="docs.interface_heading">🔧 Интерфейс</h2>
+      <p data-i18n-html="docs.ui.panel"><b>Верхняя панель</b> — выбор растений и количество солнц.</p>
+      <p data-i18n-html="docs.ui.mowers"><b>Косилки</b> — стоят в начале каждого ряда. При касании зомби мчатся вперёд и сносят всё на своём пути.</p>
+      <p data-i18n-html="docs.ui.cursik"><b>Курсик</b> — ваш помощник с инвертированными цветами. Он перетаскивает зомби и помогает при обучении.</p>
+      <p data-i18n-html="docs.ui.night"><b>Ночной режим</b> — подсолнухи не работают, вместо них — солнце-грибы. Переключается в настройках.</p>
+    </div>
+  </div>
+</div>
+
+<div id="screen-game" class="screen">
+
+  <div id="fake-desktop">
+    <img id="desktop-screenshot" src="" alt="">
+    <div id="desktop-icons-layer"></div>
+  </div>
+
+  <div id="game-world">
+
+    <div id="pvz-bg"></div>
+    <div id="grid-container"></div>
+    <div id="entities-layer"></div>
+    <div id="cursik">
+      <img src="static/img/ui/cursik.png" alt="" onerror="this.style.display='none'">
+      <div id="cursik-bubble" class="cursik-bubble hidden"></div>
+    </div>
+
+    <div id="suns-layer"></div>
+    <div id="particles-layer"></div>
+
+  </div>
+
+  <div id="hud-top">
+    <div id="sun-counter">
+      <img src="static/img/ui/sun.png" alt="☀" onerror="this.textContent='☀'">
+      <span id="sun-count">150</span>
+    </div>
+    <div id="plant-bar" class="plant-bar">
+      </div>
+    <div id="wave-info"><span data-i18n="hud.wave">Волна:</span> <span id="wave-num">0</span><span id="mode-indicators"></span></div>
+    <button id="mobile-pause-btn" class="mobile-pause-btn" aria-label="Menu">⋮</button>
+  </div>
+
+  <div id="pause-menu" class="pause-menu hidden">
+    <div class="pause-box">
+      <h2 data-i18n="pause.title">⏸ Пауза</h2>
+      <button class="pause-btn" id="pause-resume" data-i18n="pause.resume">▶ Продолжить</button>
+      <button class="pause-btn" id="pause-info" data-i18n="pause.info">ℹ️ Инфо</button>
+      <button class="pause-btn" id="pause-settings" data-i18n="pause.settings">⚙ Настройки</button>
+      <button class="pause-btn danger" id="pause-menu-btn" data-i18n="pause.menu">🏠 Главное меню</button>
+      <button class="pause-btn danger small" id="pause-exit" data-i18n="pause.exit">✖ Выйти</button>
+    </div>
+  </div>
+
+  <div id="night-overlay" class="night-overlay hidden"></div>
+  <div id="dev-panel" class="dev-panel hidden">
+    <div class="dev-panel-header">
+      <span>DEV PANEL</span>
+      <div class="dev-tabs">
+        <button class="dev-tab active" data-tab="gui">GUI</button>
+        <button class="dev-tab" data-tab="console">Console</button>
+      </div>
+      <button id="dev-panel-close" class="dev-close-btn">✕</button>
+    </div>
+    <div id="dev-tab-gui" class="dev-tab-content active">
+      <div class="dev-section">
+        <label data-i18n="dev.sun_label">☀ Солнце:</label>
+        <input type="number" id="dev-sun-input" value="150" min="0" max="9999" style="width:60px">
+        <button id="dev-sun-give" class="dev-btn" data-i18n="dev.give">Дать</button>
+        <button id="dev-sun-set" class="dev-btn" data-i18n="dev.set">Уст.</button>
+      </div>
+      <div class="dev-section">
+        <label data-i18n="dev.spawn_zombie">🧟 Спавн зомби:</label>
+        <select id="dev-zombie-type" class="dev-select">
+          <option value="zombie" data-i18n="dev.zombie.zombie">Зомби</option>
+          <option value="system_zombie" data-i18n="dev.zombie.system">Систем-зомби</option>
+          <option value="hdd_zombie" data-i18n="dev.zombie.hdd">HDD-зомби</option>
+          <option value="ssd_zombie" data-i18n="dev.zombie.ssd">SSD-зомби</option>
+          <option value="winrar_zombie" data-i18n="dev.zombie.winrar">WinRAR-зомби</option>
+          <option value="trojan_catapult" data-i18n="dev.zombie.trojan">Троян-катапульта</option>
+          <option value="bungee" data-i18n="dev.zombie.bungee">Тарзанка</option>
+          <option value="flag_zombie" data-i18n="dev.zombie.flag">Зомби с флагом</option>
+          <option value="pole_loud" data-i18n="dev.zombie.pole_loud">Шест (громкий)</option>
+          <option value="pole_quiet" data-i18n="dev.zombie.pole_quiet">Шест (тихий)</option>
+          <option value="excel_zombie" data-i18n="dev.zombie.excel">Excel-зомби</option>
+          <option value="your_death" data-i18n="dev.zombie.boss">Ваша смерть</option>
+        </select>
+        <select id="dev-zombie-row" class="dev-select">
+          <option value="0" data-i18n="dev.row1">Ряд 1</option>
+          <option value="1" data-i18n="dev.row2">Ряд 2</option>
+          <option value="2" data-i18n="dev.row3">Ряд 3</option>
+          <option value="3" data-i18n="dev.row4">Ряд 4</option>
+          <option value="4" data-i18n="dev.row5">Ряд 5</option>
+        </select>
+        <button id="dev-spawn-zombie" class="dev-btn" data-i18n="dev.spawn">Спавн</button>
+      </div>
+      <div class="dev-section">
+        <label data-i18n="dev.mowers_label">🚜 Косилки:</label>
+        <button class="dev-btn dev-mower-btn" data-row="0">1</button>
+        <button class="dev-btn dev-mower-btn" data-row="1">2</button>
+        <button class="dev-btn dev-mower-btn" data-row="2">3</button>
+        <button class="dev-btn dev-mower-btn" data-row="3">4</button>
+        <button class="dev-btn dev-mower-btn" data-row="4">5</button>
+        <button id="dev-respawn-mowers" class="dev-btn" data-i18n="dev.respawn">Респавн</button>
+      </div>
+      <div class="dev-section">
+        <button id="dev-spawn-sun" class="dev-btn" data-i18n="dev.spawn_sun">☀ Спавн солнца</button>
+        <button id="dev-kill-all" class="dev-btn dev-btn-red" data-i18n="dev.kill_all">💀 Убить всех</button>
+      </div>
+      <div class="dev-section">
+        <label class="dev-checkbox-label">
+          <input type="checkbox" id="dev-show-zombie-id">
+          <span data-i18n="dev.show_zombie_id">Показывать номер зомби</span>
+        </label>
+      </div>
+      <div class="dev-section dev-cwave-section">
+        <label data-i18n="dev.custom_waves">📦 Кастомные волны:</label>
+        <div class="dev-cwave-row">
+          <select id="dev-cwave-select" class="dev-select dev-cwave-select"></select>
+          <button id="dev-cwave-refresh" class="dev-btn dev-btn-icon" data-i18n-title="dev.refresh" title="Обновить">🔄</button>
+        </div>
+        <div class="dev-cwave-row">
+          <button id="dev-cwave-start" class="dev-btn dev-btn-green" data-i18n="dev.start">▶ Запустить</button>
+          <button id="dev-cwave-stop" class="dev-btn dev-btn-red" data-i18n="dev.stop">⏹ Стоп</button>
+        </div>
+        <div id="dev-cwave-info" class="dev-cwave-info"></div>
+      </div>
+    </div>
+    <div id="dev-tab-console" class="dev-tab-content">
+      <div id="dev-console-output" class="dev-console-output">
+        <div class="dev-console-line hint" data-i18n="dev.console_hint">Введите help для списка команд</div>
+      </div>
+      <div class="dev-console-input-row">
+        <span class="dev-console-prompt">&gt;</span>
+        <input type="text" id="dev-console-input" class="dev-console-input" placeholder="help" autocomplete="off">
+      </div>
+    </div>
+  </div>
+
+  <div id="tutorial-overlay" class="tutorial-overlay hidden">
+    <div class="tutorial-box">
+      <div id="tutorial-text"></div>
+      <button class="tutorial-btn" id="tutorial-next" data-i18n="tutorial.next">Далее →</button>
+      <button class="tutorial-btn secondary" id="tutorial-skip" data-i18n="tutorial.skip">Пропустить</button>
+    </div>
+  </div>
+
+</div>
+
+<div id="credits-modal" class="credits-modal hidden">
+  <div class="credits-card">
+    <div class="credits-spine"></div>
+    <button class="credits-close" id="credits-close" aria-label="Close">✕</button>
+    <header class="credits-head">
+      <span class="credits-eyebrow" data-i18n="credits.eyebrow">— A project by —</span>
+      <h2 class="credits-title">Plants Vs. Zombies <em>Desktop</em></h2>
+      <div class="credits-divider"><span>✦</span></div>
+    </header>
+    <div class="credits-body">
+      <div class="credits-people">
+        <section class="credits-block">
+          <h3 data-i18n="credits.idea">Автор идеи</h3>
+          <p class="credits-name">OVERPACH</p>
+          <p class="credits-role" data-i18n="credits.idea_role">Концепт, направление</p>
+        </section>
+        <section class="credits-block">
+          <h3 data-i18n="credits.dev">Разработка</h3>
+          <p class="credits-name">Xotaym</p>
+          <p class="credits-role" data-i18n="credits.dev_role">Code, design, gameplay</p>
+        </section>
+      </div>
+      <section class="credits-block credits-testers">
+        <h3 data-i18n="credits.testers">Тестировщики</h3>
+        <ul class="credits-tester-list">
+          <li>GенаDip</li>
+          <li>VOshka</li>
+          <li>goosichek</li>
+          <li>Олд pvz</li>
+        </ul>
+        <p class="credits-role" data-i18n="credits.testers_role">Поиск багов, плейтест</p>
+      </section>
+      <section class="credits-block credits-media">
+        <h3 data-i18n="credits.media">Информационная поддержка</h3>
+        <ul class="credits-media-list">
+          <li>
+            <a href="https://t.me/PvZ257" target="_blank" rel="noopener noreferrer" class="credits-link">ТГК «PvZ моды!»</a>
+            <span class="credits-link-handle">t.me/PvZ257</span>
+          </li>
+          <li>
+            <a href="https://t.me/pvz_2_and_heroes" target="_blank" rel="noopener noreferrer" class="credits-link">Plants vs. Zombies</a>
+            <span class="credits-link-handle">t.me/pvz_2_and_heroes</span>
+          </li>
+          <li>
+            <a href="https://t.me/pvzgamesdowload" target="_blank" rel="noopener noreferrer" class="credits-link">ТГК «Пвз игры и моды»</a>
+            <span class="credits-link-handle">t.me/pvzgamesdowload</span>
+          </li>
+        </ul>
+      </section>
+      <section class="credits-block credits-thanks">
+        <h3 data-i18n="credits.thanks">Особая благодарность</h3>
+        <p data-i18n="credits.thanks_text">PopCap Games — за Plants vs. Zombies.</p>
+      </section>
+    </div>
+    <footer class="credits-foot">
+      <span data-i18n="credits.license">CC BY-NC-SA 4.0</span>
+      <span class="credits-dot">·</span>
+      <span data-i18n="credits.year">2026</span>
+    </footer>
+  </div>
+</div>
+
+<div id="screen-end" class="screen bsod-screen">
+  <div class="bsod-content">
+    <div class="bsod-face" id="bsod-face" style="opacity:0">:(</div>
+    <h1 class="bsod-title" id="bsod-title" style="opacity:0" data-i18n="bsod.title">КРИТИЧЕСКИЙ СБОЙ СИСТЕМЫ</h1>
+    <p class="bsod-text" id="bsod-text" style="opacity:0" data-i18n-html="bsod.text">Зомби проник в систему. Все файлы рабочего стола повреждены.<br>Мы собираем данные об ошибке и восстанавливаем рабочий стол...</p>
+    <p class="bsod-progress" id="bsod-progress" style="opacity:0"></p>
+    <button class="bsod-btn" id="btn-end-menu" style="display:none" data-i18n="bsod.restart">Перезагрузить рабочий стол</button>
+  </div>
+</div>
+
+<div id="settings-modal" class="settings-modal hidden">
+  <div class="settings-box">
+    <h2 data-i18n="settings.title">⚙ Настройки</h2>
+
+    <div class="settings-group">
+      <label class="settings-label" data-i18n="settings.volume">🔊 Громкость</label>
+      <div class="settings-slider-row">
+        <input type="range" id="settings-volume" class="settings-range" min="0" max="100" value="80">
+        <span id="settings-volume-val" class="settings-val">80%</span>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <label class="settings-label" data-i18n="settings.music">🎵 Музыка</label>
+      <label class="toggle-3d">
+        <input type="checkbox" id="settings-music-cb" checked>
+        <span class="toggle-3d-track"><span class="toggle-3d-knob"></span></span>
+        <span class="toggle-3d-label">ВКЛ</span>
+      </label>
+    </div>
+
+    <div class="settings-group">
+      <label class="settings-label" data-i18n="settings.sfx">💥 Эффекты</label>
+      <label class="toggle-3d">
+        <input type="checkbox" id="settings-sfx-cb" checked>
+        <span class="toggle-3d-track"><span class="toggle-3d-knob"></span></span>
+        <span class="toggle-3d-label">ВКЛ</span>
+      </label>
+    </div>
+
+    <div class="settings-group">
+      <label class="settings-label" style="color:#e67e22" data-i18n="settings.funmode">🐛 Фан-режим</label>
+      <label class="toggle-3d fun">
+        <input type="checkbox" id="settings-funmode-cb">
+        <span class="toggle-3d-track"><span class="toggle-3d-knob"></span></span>
+        <span class="toggle-3d-label">ВЫКЛ</span>
+      </label>
+    </div>
+
+    <div class="settings-group">
+      <label class="settings-label" data-i18n="settings.gfx">✨ Графика</label>
+      <label class="toggle-3d">
+        <input type="checkbox" id="settings-gfx-cb">
+        <span class="toggle-3d-track"><span class="toggle-3d-knob"></span></span>
+        <span class="toggle-3d-label" id="settings-gfx-label">Низкая</span>
+      </label>
+    </div>
+
+    <div class="settings-group">
+      <label class="settings-label" data-i18n="settings.language">🌐 Язык</label>
+      <label class="toggle-3d">
+        <input type="checkbox" id="settings-lang-cb">
+        <span class="toggle-3d-track"><span class="toggle-3d-knob"></span></span>
+        <span class="toggle-3d-label" id="settings-lang-label">Русский</span>
+      </label>
+    </div>
+
+    <div class="settings-divider"></div>
+
+    <div class="settings-group">
+      <label class="settings-label" data-i18n="settings.gamemode">🌙 Режим игры</label>
+      <div class="toggle-3way" id="settings-gamemode" data-pos="0">
+        <span class="toggle-3way-labels">
+          <span class="toggle-3way-lbl active" data-pos="0"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg><span data-i18n="settings.gamemode.day">ДЕНЬ</span></span>
+          <span class="toggle-3way-lbl" data-pos="1"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><span data-i18n="settings.gamemode.night">НОЧЬ</span></span>
+          <span class="toggle-3way-lbl" data-pos="2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/><circle cx="15.5" cy="8.5" r="1.5" fill="currentColor"/><circle cx="8.5" cy="15.5" r="1.5" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg><span data-i18n="settings.gamemode.random">СЛУЧ.</span></span>
+        </span>
+        <div class="toggle-3way-track">
+          <span class="toggle-3way-knob"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-divider"></div>
+
+    <div class="settings-group">
+      <label class="settings-label" style="color:#5865F2" data-i18n="settings.discord">💬 Discord-статус</label>
+      <label class="toggle-3d">
+        <input type="checkbox" id="settings-discord-cb" checked>
+        <span class="toggle-3d-track"><span class="toggle-3d-knob"></span></span>
+        <span class="toggle-3d-label">ВКЛ</span>
+      </label>
+    </div>
+    <p id="settings-discord-hint" class="settings-hint" style="display:none"></p>
+
+    <div class="settings-group">
+      <label class="settings-label" style="color:#e74c3c" data-i18n="settings.devmode">🛠 Режим разработчика</label>
+      <label class="toggle-3d dev">
+        <input type="checkbox" id="settings-devmode-cb">
+        <span class="toggle-3d-track"><span class="toggle-3d-knob"></span></span>
+        <span class="toggle-3d-label">ВЫКЛ</span>
+      </label>
+    </div>
+
+    <button class="pause-btn small" id="settings-open-logs" data-i18n="settings.open_logs">📂 Открыть логи</button>
+    <button class="pause-btn small dev-only-btn" id="settings-clear-logs" style="display:none" data-i18n="settings.clear_logs">Очистить логи</button>
+
+    
+    <div class="settings-group">
+    </div>
+
+<button class="pause-btn" id="openEditorBtn" style="background:#9b59b6;margin-bottom:10px;">✏ ОТКРЫТЬ РЕДАКТОР</button>
+    <button class="pause-btn" id="settings-close" data-i18n="settings.done">✔ Готово</button>
+
+    <div class="settings-divider"></div>
+    <button class="pause-btn danger" id="settings-reset" data-i18n="settings.reset">🗑 Перезапустить полностью</button>
+    <p class="settings-hint" data-i18n="settings.reset.hint">Игра как новая, будто только-что скачал</p>
+  </div>
+</div>
+
+<div id="logs-modal" class="settings-modal hidden">
+  <div class="settings-box" style="max-width:760px; width:90%">
+    <h2 data-i18n="logs.title">📂 Логи игры</h2>
+    <textarea id="logs-content" readonly style="width:100%; height:340px; font-family:monospace; font-size:11px; background:#111; color:#cfcfcf; border:1px solid #333; padding:8px; resize:vertical; white-space:pre; overflow:auto"></textarea>
+    <p id="logs-status" class="settings-hint" style="min-height:1.2em"></p>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center">
+      <button class="pause-btn small" id="logs-copy" data-i18n="logs.copy">📋 Скопировать</button>
+      <button class="pause-btn small" id="logs-save" data-i18n="logs.save">💾 Сохранить</button>
+      <button class="pause-btn small" id="logs-refresh" data-i18n="logs.refresh">🔄 Обновить</button>
+    </div>
+    <button class="pause-btn" id="logs-close" data-i18n="settings.done">✔ Готово</button>
+  </div>
+</div>
+
+<div id="next-level-modal" class="confirm-modal hidden">
+  <div class="confirm-box" style="max-width:480px">
+    <h2 id="next-level-title" style="margin:0 0 12px 0"></h2>
+    <p id="next-level-text"></p>
+    <div class="confirm-buttons">
+      <button class="pause-btn" id="next-level-yes"></button>
+      <button class="pause-btn" id="next-level-no" data-i18n="next_level.no">Не сейчас</button>
+    </div>
+  </div>
+</div>
+
+<div id="confirm-logs-modal" class="confirm-modal hidden">
+  <div class="confirm-box">
+    <p data-i18n="confirm.logs">Вы уверены? Это очистит весь .log файл.</p>
+    <div class="confirm-buttons">
+      <button class="pause-btn danger" id="confirm-logs-yes" data-i18n="confirm.logs_yes">Да, очистить</button>
+      <button class="pause-btn" id="confirm-logs-no" data-i18n="confirm.cancel">Отмена</button>
+    </div>
+  </div>
+</div>
+
+<div id="confirm-modal" class="confirm-modal hidden">
+  <div class="confirm-box">
+    <p data-i18n-html="confirm.reset">Все сохранённые данные будут удалены.<br>Вы уверены?</p>
+    <div class="confirm-buttons">
+      <button class="pause-btn danger" id="confirm-yes" data-i18n="confirm.reset_yes">Да, сбросить</button>
+      <button class="pause-btn" id="confirm-no" data-i18n="confirm.cancel2">Отмена</button>
+    </div>
+  </div>
+</div>
+
+<div id="confirm-devmode-modal" class="confirm-modal hidden">
+  <div class="confirm-box" style="max-width:420px">
+    <p data-i18n-html="confirm.devmode_text">В этом режиме все основные волны отключаются, но при этом даются возможности:<br><br>• Спавн любых зомби<br>• Управление солнцами<br>• Запуск кастомных волн<br>• Консоль разработчика</p>
+    <div class="confirm-buttons">
+      <button class="pause-btn danger" id="confirm-devmode-yes" disabled data-i18n="confirm.devmode_yes">Подтвердить (5)</button>
+      <button class="pause-btn" id="confirm-devmode-no" data-i18n="confirm.devmode_no">Отмена</button>
+    </div>
+  </div>
+</div>
+
+<div id="confirm-funmode-modal" class="confirm-modal hidden">
+  <div class="confirm-box" style="max-width:460px">
+    <p data-i18n-html="confirm.funmode_text">Этот режим включает все забавные баги, допущенные при разработке.</p>
+    <div class="confirm-buttons">
+      <button class="pause-btn danger" id="confirm-funmode-yes" disabled data-i18n="confirm.funmode_yes">Да, хочу страдать (5)</button>
+      <button class="pause-btn" id="confirm-funmode-no" data-i18n="confirm.funmode_no">Нет, я нормальный</button>
+    </div>
+  </div>
+</div>
+
+<div id="update-modal" class="settings-modal hidden">
+  <div class="settings-box update-box">
+    <div class="update-icon" id="update-icon">⟳</div>
+    <h2 class="settings-title" id="update-title" data-i18n="update.title">⟳ Обновления</h2>
+
+    <div class="update-versions">
+      <div class="update-row"><span data-i18n="update.current">Текущая</span><b id="update-current">-</b></div>
+      <div class="update-row"><span data-i18n="update.latest">Последняя</span><b id="update-latest">-</b></div>
+      <div class="update-row"><span data-i18n="update.build">Сборка</span><b id="update-buildtype">-</b></div>
+    </div>
+
+    <div id="update-message" class="update-message" data-i18n="update.checking">Проверяем...</div>
+
+    <div id="update-progress-wrap" class="update-progress-wrap hidden">
+      <div class="update-progress-bar"><div id="update-progress-fill" class="update-progress-fill"></div></div>
+      <div id="update-progress-text" class="update-progress-text">0%</div>
+    </div>
+
+    <div id="update-notes-wrap" class="update-notes-wrap hidden">
+      <div class="update-notes-title" data-i18n="update.notes">Что нового</div>
+      <div id="update-notes" class="update-notes"></div>
+    </div>
+
+    <div class="settings-buttons">
+      <button class="pause-btn" id="update-check-btn" data-i18n="update.btn.check">Проверить</button>
+      <button class="pause-btn primary hidden" id="update-apply-btn" data-i18n="update.btn.now">Обновить</button>
+      <button class="pause-btn" id="update-close" data-i18n="update.btn.later">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<audio id="snd-delete" src="static/sounds/delete.mp3" preload="auto"></audio>
+<audio id="snd-pea" src="static/sounds/pea.mp3" preload="auto"></audio>
+<audio id="snd-explosion" src="static/sounds/explosion.mp3" preload="auto"></audio>
+<audio id="snd-lawnmower" src="static/sounds/lawnmower.mp3" preload="auto"></audio>
+<audio id="snd-sun" src="static/sounds/sun.mp3" preload="auto"></audio>
+<audio id="snd-death" src="static/sounds/your-death.mp3" preload="auto"></audio>
+<audio id="snd-menu" src="static/sounds/menu.mp3" preload="auto" loop></audio>
+<audio id="snd-defeat" src="static/sounds/defeat.mp3" preload="auto"></audio>
+
+<script src="static/js/lang.js"></script>
+<script src="static/js/engine.js"></script>
+<script src="static/js/ui.js"></script>
+<script src="static/js/game.js"></script>
+<script src="static/js/boot.js"></script>
+<script src="static/js/updater.js"></script>
+<script src="static/js/discord.js"></script>
+<script src="static/js/main.js"></script>
+<script src="static/js/version.js"></script>
+<script src="static/js/level_selector.js"></script>
+<script src="static/js/editor.js"></script>
+</body>
+</html>
+<script>
+// Редактор в настройках
+let edWaves = [], edCurrent = [], edSelected = null, edZombieList = [];
+
+fetch('/api/manifest').then(r=>r.json()).then(d=>{
+    edZombieList = Object.keys(d.zombies||{}).filter(z=>z!='your_death');
+    let sel = document.getElementById('edType');
+    if(sel) edZombieList.forEach(z=>sel.innerHTML+=`<option value="${z}">${z}</option>`);
+}).catch(()=>{
+    edZombieList = ['zombie','system_zombie','hdd_zombie','ssd_zombie','winrar_zombie','trojan_catapult'];
+    let sel = document.getElementById('edType');
+    if(sel) edZombieList.forEach(z=>sel.innerHTML+=`<option value="${z}">${z}</option>`);
+});
+
+function edRefresh(){
+    let curDiv = document.getElementById('edCurrentList');
+    if(curDiv){
+        curDiv.innerHTML = '';
+        edCurrent.forEach((z,i)=>{
+            let d = document.createElement('div');
+            d.style.cssText = 'padding:4px;border-bottom:1px solid #2a4a2a;display:flex;justify-content:space-between';
+            d.innerHTML = `${z.type}, ряд ${z.row}, ${z.delay}мс <span style="color:#e74c3c;cursor:pointer" data-idx="${i}">🗑</span>`;
+            d.querySelector('span').onclick = ()=>{ edCurrent.splice(i,1); edRefresh(); };
+            curDiv.appendChild(d);
+        });
+    }
+    let wavesDiv = document.getElementById('edWavesList');
+    if(wavesDiv){
+        wavesDiv.innerHTML = '';
+        edWaves.forEach((w,i)=>{
+            let d = document.createElement('div');
+            d.className = `ed-wave-item ${edSelected===i?'selected':''}`;
+            d.textContent = `Волна ${i+1}: ${w.zombies.length} зомби`;
+            d.onclick = ()=>{ edSelected=i; edRefresh(); };
+            wavesDiv.appendChild(d);
+        });
+    }
+}
+
+document.getElementById('edAddBtn')?.onclick = ()=>{
+    let t = document.getElementById('edType').value;
+    let r = parseInt(document.getElementById('edRow').value)||3;
+    let d = parseInt(document.getElementById('edDelay').value)||0;
+    edCurrent.push({type:t,row:r,delay:d}); edRefresh();
+};
+document.getElementById('edRandomBtn')?.onclick = ()=>{
+    edCurrent = [];
+    for(let i=0;i<5;i++) edCurrent.push({type:edZombieList[Math.floor(Math.random()*edZombieList.length)], row:Math.floor(Math.random()*5)+1, delay:Math.floor(Math.random()*5000)});
+    edCurrent.sort((a,b)=>a.delay-b.delay); edRefresh();
+};
+document.getElementById('edBossBtn')?.onclick = ()=>{ edCurrent.push({type:'your_death',row:3,delay:0}); edRefresh(); };
+document.getElementById('edClearBtn')?.onclick = ()=>{ edCurrent=[]; edRefresh(); };
+document.getElementById('edSaveWaveBtn')?.onclick = ()=>{
+    if(!edCurrent.length){alert('Нет зомби');return;}
+    edWaves.push({zombies:[...edCurrent]}); edCurrent=[]; edRefresh();
+};
+document.getElementById('edUpBtn')?.onclick = ()=>{
+    if(edSelected!==null && edSelected>0){
+        [edWaves[edSelected], edWaves[edSelected-1]] = [edWaves[edSelected-1], edWaves[edSelected]];
+        edSelected--; edRefresh();
+    }
+};
+document.getElementById('edDownBtn')?.onclick = ()=>{
+    if(edSelected!==null && edSelected<edWaves.length-1){
+        [edWaves[edSelected], edWaves[edSelected+1]] = [edWaves[edSelected+1], edWaves[edSelected]];
+        edSelected++; edRefresh();
+    }
+};
+document.getElementById('edEditBtn')?.onclick = ()=>{
+    if(edSelected!==null && edWaves[edSelected]){
+        edCurrent = [...edWaves[edSelected].zombies];
+        edWaves.splice(edSelected,1);
+        edSelected=null; edRefresh();
+    }
+};
+document.getElementById('edDelBtn')?.onclick = ()=>{
+    if(edSelected!==null && edWaves[edSelected]){
+        edWaves.splice(edSelected,1);
+        edSelected=null; edRefresh();
+    }
+};
+document.getElementById('edSaveLevelBtn')?.onclick = ()=>{
+    let name = document.getElementById('edName').value.trim();
+    if(!name){alert('Введите название');return;}
+    if(!edWaves.length){alert('Добавьте волны');return;}
+    let level = {name:name,author:"Editor",startSun:150,nightMode:false,plants:null,zombies:null,waves:edWaves};
+    let fn = name.toLowerCase().replace(/ /g,'_')+'.json';
+    let a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(level,null,2)],{type:'application/json'}));
+    a.download = fn; a.click();
+    alert(`✅ Уровень "${name}" сохранён!\nФайл: custom_waves/${fn}\n\nПерезапусти игру`);
+    edWaves=[]; edCurrent=[]; edSelected=null; edRefresh();
+    document.getElementById('edName').value='';
+};
+document.getElementById('edHideBtn')?.onclick = ()=>{
+};
+let edVisible = false;
+document.getElementById('openEditorBtn')?.onclick = ()=>{
+    if(edVisible){ p.style.display='none'; edVisible=false; document.getElementById('openEditorBtn').textContent='✏ ОТКРЫТЬ РЕДАКТОР'; }
+    else{ p.style.display='block'; edVisible=true; document.getElementById('openEditorBtn').textContent='✏ СКРЫТЬ РЕДАКТОР'; edRefresh(); }
+};
+</script>
+<script>
+(function() {
+    console.log('Editor script loaded');
+    
+    let edWaves = [], edCurrent = [], edSelected = null, edZombieList = [];
+    
+    // Ждём загрузки DOM
+    function waitForElements() {
+        if (document.getElementById('edType')) {
+            initEditor();
+        } else {
+            setTimeout(waitForElements, 100);
+        }
+    }
+    
+    function initEditor() {
+        console.log('Editor initialized');
+        
+        // Загружаем зомби
+        fetch('/api/manifest').then(r=>r.json()).then(d=>{
+            edZombieList = Object.keys(d.zombies||{}).filter(z=>z!='your_death');
+            let sel = document.getElementById('edType');
+            if(sel) {
+                sel.innerHTML = '';
+                edZombieList.forEach(z=>sel.innerHTML+=`<option value="${z}">${z}</option>`);
+            }
+        }).catch(()=>{
+            edZombieList = ['zombie','system_zombie','hdd_zombie','ssd_zombie','winrar_zombie','trojan_catapult'];
+            let sel = document.getElementById('edType');
+            if(sel) {
+                sel.innerHTML = '';
+                edZombieList.forEach(z=>sel.innerHTML+=`<option value="${z}">${z}</option>`);
+            }
+        });
+        
+        function edRefresh() {
+            let curDiv = document.getElementById('edCurrentList');
+            if(curDiv) {
+                curDiv.innerHTML = '';
+                edCurrent.forEach((z,i)=>{
+                    let d = document.createElement('div');
+                    d.style.cssText = 'padding:4px;border-bottom:1px solid #2a4a2a;display:flex;justify-content:space-between';
+                    d.innerHTML = `${z.type}, ряд ${z.row}, ${z.delay}мс <span style="color:#e74c3c;cursor:pointer" data-idx="${i}">🗑</span>`;
+                    d.querySelector('span').onclick = ()=>{ edCurrent.splice(i,1); edRefresh(); };
+                    curDiv.appendChild(d);
+                });
+            }
+            let wavesDiv = document.getElementById('edWavesList');
+            if(wavesDiv) {
+                wavesDiv.innerHTML = '';
+                edWaves.forEach((w,i)=>{
+                    let d = document.createElement('div');
+                    d.style.cssText = `padding:4px;border-bottom:1px solid #2a4a2a;cursor:pointer;background:${edSelected===i?'#3a5a3a':'transparent'}`;
+                    d.textContent = `Волна ${i+1}: ${w.zombies.length} зомби`;
+                    d.onclick = ()=>{ edSelected=i; edRefresh(); };
+                    wavesDiv.appendChild(d);
+                });
+            }
+        }
+        
+        document.getElementById('edAddBtn').onclick = () => {
+            let t = document.getElementById('edType').value;
+            let r = parseInt(document.getElementById('edRow').value)||3;
+            let d = parseInt(document.getElementById('edDelay').value)||0;
+            edCurrent.push({type:t,row:r,delay:d});
+            edRefresh();
+        };
+        
+        document.getElementById('edRandomBtn').onclick = () => {
+            edCurrent = [];
+            for(let i=0;i<5;i++) {
+                edCurrent.push({
+                    type: edZombieList[Math.floor(Math.random()*edZombieList.length)],
+                    row: Math.floor(Math.random()*5)+1,
+                    delay: Math.floor(Math.random()*5000)
+                });
+            }
+            edCurrent.sort((a,b)=>a.delay-b.delay);
+            edRefresh();
+        };
+        
+        document.getElementById('edBossBtn').onclick = () => {
+            edCurrent.push({type:'your_death',row:3,delay:0});
+            edRefresh();
+        };
+        
+        document.getElementById('edClearBtn').onclick = () => {
+            edCurrent = [];
+            edRefresh();
+        };
+        
+        document.getElementById('edSaveWaveBtn').onclick = () => {
+            if(!edCurrent.length){alert('Нет зомби в волне!');return;}
+            edWaves.push({zombies:[...edCurrent]});
+            edCurrent = [];
+            edRefresh();
+        };
+        
+        document.getElementById('edUpBtn').onclick = () => {
+            if(edSelected!==null && edSelected>0){
+                [edWaves[edSelected], edWaves[edSelected-1]] = [edWaves[edSelected-1], edWaves[edSelected]];
+                edSelected--;
+                edRefresh();
+            }
+        };
+        
+        document.getElementById('edDownBtn').onclick = () => {
+            if(edSelected!==null && edSelected<edWaves.length-1){
+                [edWaves[edSelected], edWaves[edSelected+1]] = [edWaves[edSelected+1], edWaves[edSelected]];
+                edSelected++;
+                edRefresh();
+            }
+        };
+        
+        document.getElementById('edEditBtn').onclick = () => {
+            if(edSelected!==null && edWaves[edSelected]){
+                edCurrent = [...edWaves[edSelected].zombies];
+                edWaves.splice(edSelected,1);
+                edSelected = null;
+                edRefresh();
+            }
+        };
+        
+        document.getElementById('edDelBtn').onclick = () => {
+            if(edSelected!==null && edWaves[edSelected]){
+                edWaves.splice(edSelected,1);
+                edSelected = null;
+                edRefresh();
+            }
+        };
+        
+        document.getElementById('edSaveLevelBtn').onclick = () => {
+            let name = document.getElementById('edName').value.trim();
+            if(!name){alert('Введите название уровня!');return;}
+            if(!edWaves.length){alert('Добавьте хотя бы одну волну!');return;}
+            
+            let level = {
+                name: name,
+                author: "Editor",
+                startSun: 150,
+                nightMode: false,
+                plants: null,
+                zombies: null,
+                waves: edWaves
+            };
+            let fn = name.toLowerCase().replace(/ /g,'_')+'.json';
+            let blob = new Blob([JSON.stringify(level,null,2)],{type:'application/json'});
+            let a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = fn;
+            a.click();
+            alert(`✅ Уровень "${name}" сохранён!\nФайл: custom_waves/${fn}\n\nПерезапусти игру чтобы увидеть уровень в меню!`);
+            
+            edWaves = [];
+            edCurrent = [];
+            edSelected = null;
+            edRefresh();
+            document.getElementById('edName').value = '';
+        };
+        
+        document.getElementById('edHideBtn').onclick = () => {
+            document.getElementById('openEditorBtn').textContent = '✏ ОТКРЫТЬ РЕДАКТОР';
+        };
+        
+        edRefresh();
+    }
+    
+    // Привязываем кнопку показа редактора
+    function bindToggle() {
+        let toggleBtn = document.getElementById('openEditorBtn');
+        if(toggleBtn) {
+            toggleBtn.onclick = () => {
+                if(panel.style.display === 'none' || panel.style.display === '') {
+                    panel.style.display = 'block';
+                    toggleBtn.textContent = '✏ СКРЫТЬ РЕДАКТОР';
+                    edRefresh();
+                } else {
+                    panel.style.display = 'none';
+                    toggleBtn.textContent = '✏ ОТКРЫТЬ РЕДАКТОР';
+                }
+            };
+            console.log('Toggle button bound');
+        } else {
+            setTimeout(bindToggle, 100);
+        }
+    }
+    
+    waitForElements();
+    bindToggle();
+})();
+</script>
+<script>
+(function() {
+    // Перемещаем редактор в конец settings-box если он не там
+    let settingsBox = document.querySelector('.settings-box');
+    if(editorPanel && settingsBox && editorPanel.parentElement !== settingsBox) {
+        settingsBox.appendChild(editorPanel);
+        console.log('Editor moved to settings box');
+    }
+    
+    // Чиним кнопку
+    let toggleBtn = document.getElementById('openEditorBtn');
+    
+    if(toggleBtn && panel) {
+        toggleBtn.onclick = function(e) {
+            e.preventDefault();
+            if(panel.style.display === 'none' || panel.style.display === '') {
+                panel.style.display = 'block';
+                this.textContent = '✏ СКРЫТЬ РЕДАКТОР';
+                // Обновляем списки
+                if(typeof edRefresh === 'function') edRefresh();
+            } else {
+                panel.style.display = 'none';
+                this.textContent = '✏ ОТКРЫТЬ РЕДАКТОР';
+            }
+        };
+        console.log('Toggle button fixed');
+    }
+})();
+</script>
+<style>
+#fullEditorOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.98);
+    z-index: 100000;
+    overflow: auto;
+    display: none;
+}
+#fullEditorOverlay .editor-header {
+    background: #e94560;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+}
+#fullEditorOverlay .editor-content {
+    padding: 20px;
+    max-width: 650px;
+    margin: 0 auto;
+}
+#fullEditorOverlay input, #fullEditorOverlay select {
+    background: #1a2a1a;
+    color: #ffd700;
+    border: 1px solid #5cb85c;
+    border-radius: 5px;
+    padding: 8px;
+}
+</style>
+
+<div id="fullEditorOverlay">
+    <div class="editor-header">
+        <span style="color:white;font-size:20px;">🌱 PvZ РЕДАКТОР УРОВНЕЙ 🧟</span>
+        <button id="closeFullEditor" style="background:#c0392b;color:white;border:none;padding:8px 20px;border-radius:8px;">✖ ЗАКРЫТЬ</button>
+    </div>
+    <div class="editor-content">
+        <div style="background:#1a2a1a;padding:15px;border-radius:10px;margin-bottom:15px;">
+            <h3 style="color:#ffd700;">📝 ПАРАМЕТРЫ</h3>
+            <input type="text" id="fullEdName" placeholder="Название уровня" style="width:100%;margin-bottom:10px;">
+            <div style="display:flex;gap:10px;">
+                <input type="number" id="fullEdSun" value="150" style="flex:1;">
+                <label style="color:white;"><input type="checkbox" id="fullEdNight"> 🌙 НОЧЬ</label>
+            </div>
+        </div>
+        
+        <div style="background:#1a2a1a;padding:15px;border-radius:10px;margin-bottom:15px;">
+            <h3 style="color:#ffd700;">➕ ДОБАВИТЬ ЗОМБИ</h3>
+            <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;">
+                <select id="fullEdType" style="flex:2;"></select>
+                <input type="number" id="fullEdRow" placeholder="ряд" value="3" style="width:60px;">
+                <input type="number" id="fullEdDelay" placeholder="мс" value="0" style="width:80px;">
+                <button id="fullEdAddBtn" style="background:#2d6a2d;color:white;border:none;padding:8px 15px;border-radius:5px;">➕</button>
+            </div>
+            <div style="display:flex;gap:8px;margin-bottom:10px;">
+                <button id="fullEdRandomBtn" style="background:#9b59b6;color:white;border:none;padding:5px 12px;border-radius:5px;">🎲 5 СЛУЧАЙНЫХ</button>
+                <button id="fullEdBossBtn" style="background:#c0392b;color:white;border:none;padding:5px 12px;border-radius:5px;">👑 БОСС</button>
+                <button id="fullEdClearBtn" style="background:#e67e22;color:white;border:none;padding:5px 12px;border-radius:5px;">🗑 ОЧИСТИТЬ</button>
+            </div>
+            
+            <div id="fullEdCurrentList" style="background:#0a0a1a;border-radius:5px;min-height:60px;max-height:120px;overflow:auto;margin-bottom:10px;"></div>
+            <button id="fullEdSaveWaveBtn" style="width:100%;background:#3498db;color:white;border:none;padding:8px;border-radius:5px;margin-bottom:10px;">💾 СОХРАНИТЬ ВОЛНУ</button>
+            
+            <div id="fullEdWavesList" style="background:#0a0a1a;border-radius:5px;min-height:60px;max-height:120px;overflow:auto;margin-bottom:10px;"></div>
+            <div style="display:flex;gap:5px;">
+                <button id="fullEdUpBtn" style="flex:1;background:#f39c12;padding:5px;">⬆ ВВЕРХ</button>
+                <button id="fullEdDownBtn" style="flex:1;background:#f39c12;padding:5px;">⬇ ВНИЗ</button>
+                <button id="fullEdEditBtn" style="flex:1;background:#2d6a2d;padding:5px;">✏ РЕДАКТ</button>
+                <button id="fullEdDelBtn" style="flex:1;background:#c0392b;padding:5px;">🗑 УДАЛИТЬ</button>
+            </div>
+        </div>
+        
+        <button id="fullEdSaveLevelBtn" style="width:100%;background:#e94560;padding:15px;border-radius:10px;font-size:18px;">💾 СОХРАНИТЬ УРОВЕНЬ</button>
+    </div>
+</div>
+
+<script>
+let fullWaves = [], fullCurrent = [], fullSelected = null, fullZombies = [];
+
+fetch('/api/manifest').then(r=>r.json()).then(d=>{
+    fullZombies = Object.keys(d.zombies||{}).filter(z=>z!='your_death');
+    let sel = document.getElementById('fullEdType');
+    if(sel) fullZombies.forEach(z=>sel.innerHTML+=`<option value="${z}">${z}</option>`);
+}).catch(()=>{
+    fullZombies = ['zombie','system_zombie','hdd_zombie','ssd_zombie','winrar_zombie','trojan_catapult'];
+    let sel = document.getElementById('fullEdType');
+    if(sel) fullZombies.forEach(z=>sel.innerHTML+=`<option value="${z}">${z}</option>`);
+});
+
+function fullRefresh(){
+    let curDiv = document.getElementById('fullEdCurrentList');
+    if(curDiv){
+        curDiv.innerHTML = '';
+        fullCurrent.forEach((z,i)=>{
+            let d = document.createElement('div');
+            d.style.cssText = 'padding:4px;border-bottom:1px solid #2a4a2a;display:flex;justify-content:space-between';
+            d.innerHTML = `${z.type}, ряд ${z.row}, ${z.delay}мс <span style="color:#e74c3c;cursor:pointer" data-idx="${i}">🗑</span>`;
+            d.querySelector('span').onclick = ()=>{ fullCurrent.splice(i,1); fullRefresh(); };
+            curDiv.appendChild(d);
+        });
+    }
+    let wavesDiv = document.getElementById('fullEdWavesList');
+    if(wavesDiv){
+        wavesDiv.innerHTML = '';
+        fullWaves.forEach((w,i)=>{
+            let d = document.createElement('div');
+            d.style.cssText = `padding:4px;border-bottom:1px solid #2a4a2a;cursor:pointer;background:${fullSelected===i?'#3a5a3a':'transparent'}`;
+            d.textContent = `Волна ${i+1}: ${w.zombies.length} зомби`;
+            d.onclick = ()=>{ fullSelected=i; fullRefresh(); };
+            wavesDiv.appendChild(d);
+        });
+    }
+}
+
+document.getElementById('fullEdAddBtn').onclick = ()=>{
+    let t = document.getElementById('fullEdType').value;
+    let r = parseInt(document.getElementById('fullEdRow').value)||3;
+    let d = parseInt(document.getElementById('fullEdDelay').value)||0;
+    fullCurrent.push({type:t,row:r,delay:d}); fullRefresh();
+};
+document.getElementById('fullEdRandomBtn').onclick = ()=>{
+    fullCurrent = [];
+    for(let i=0;i<5;i++) fullCurrent.push({type:fullZombies[Math.floor(Math.random()*fullZombies.length)], row:Math.floor(Math.random()*5)+1, delay:Math.floor(Math.random()*5000)});
+    fullCurrent.sort((a,b)=>a.delay-b.delay); fullRefresh();
+};
+document.getElementById('fullEdBossBtn').onclick = ()=>{ fullCurrent.push({type:'your_death',row:3,delay:0}); fullRefresh(); };
+document.getElementById('fullEdClearBtn').onclick = ()=>{ fullCurrent=[]; fullRefresh(); };
+document.getElementById('fullEdSaveWaveBtn').onclick = ()=>{
+    if(!fullCurrent.length){alert('Нет зомби!');return;}
+    fullWaves.push({zombies:[...fullCurrent]}); fullCurrent=[]; fullRefresh();
+};
+document.getElementById('fullEdUpBtn').onclick = ()=>{
+    if(fullSelected!==null && fullSelected>0){
+        [fullWaves[fullSelected], fullWaves[fullSelected-1]] = [fullWaves[fullSelected-1], fullWaves[fullSelected]];
+        fullSelected--; fullRefresh();
+    }
+};
+document.getElementById('fullEdDownBtn').onclick = ()=>{
+    if(fullSelected!==null && fullSelected<fullWaves.length-1){
+        [fullWaves[fullSelected], fullWaves[fullSelected+1]] = [fullWaves[fullSelected+1], fullWaves[fullSelected]];
+        fullSelected++; fullRefresh();
+    }
+};
+document.getElementById('fullEdEditBtn').onclick = ()=>{
+    if(fullSelected!==null && fullWaves[fullSelected]){
+        fullCurrent = [...fullWaves[fullSelected].zombies];
+        fullWaves.splice(fullSelected,1);
+        fullSelected=null; fullRefresh();
+    }
+};
+document.getElementById('fullEdDelBtn').onclick = ()=>{
+    if(fullSelected!==null && fullWaves[fullSelected]){
+        fullWaves.splice(fullSelected,1);
+        fullSelected=null; fullRefresh();
+    }
+};
+document.getElementById('fullEdSaveLevelBtn').onclick = ()=>{
+    let name = document.getElementById('fullEdName').value.trim();
+    if(!name){alert('Введите название!');return;}
+    if(!fullWaves.length){alert('Добавьте волны!');return;}
+    let level = {name:name,author:"Editor",startSun:parseInt(document.getElementById('fullEdSun').value)||150,nightMode:document.getElementById('fullEdNight').checked,plants:null,zombies:null,waves:fullWaves};
+    let fn = name.toLowerCase().replace(/ /g,'_')+'.json';
+    let a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(level,null,2)],{type:'application/json'}));
+    a.download = fn; a.click();
+    alert(`✅ Уровень "${name}" сохранён!\nФайл: custom_waves/${fn}\n\nПерезапусти игру`);
+    fullWaves=[]; fullCurrent=[]; fullSelected=null; fullRefresh();
+    document.getElementById('fullEdName').value='';
+    document.getElementById('fullEditorOverlay').style.display='none';
+};
+document.getElementById('closeFullEditor').onclick = ()=>{
+    document.getElementById('fullEditorOverlay').style.display='none';
+};
+
+function openFullEditor() {
+    document.getElementById('fullEditorOverlay').style.display = 'block';
+    fullRefresh();
+}
+
+// Привязываем кнопку
+setTimeout(()=>{
+    let btn = document.getElementById('openEditorBtn');
+    if(btn) {
+        btn.onclick = (e)=>{
+            e.preventDefault();
+            openFullEditor();
+        };
+        console.log('Editor button bound');
+    }
+}, 500);
+</script>
